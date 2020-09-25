@@ -4,6 +4,7 @@ import DTO.PersonDTO;
 import DTO.PersonsDTO;
 import entities.Person;
 import exceptions.PersonNotFoundException;
+import java.util.Date;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -48,34 +49,37 @@ public class PersonFacade implements interfaces.PersonInterface {
     @Override
     public PersonDTO deletePerson(int id) throws PersonNotFoundException {
         EntityManager em = getEntityManager();
-        Person person = em.find(Person.class, id);
-        if (person == null) {
-            throw new PersonNotFoundException(String.format("Person with id: (%id) not found", id));
-        }
+        
         try {
             em.getTransaction().begin();
+            Person person = em.find(Person.class, id);
+            if (person == null) {
+                throw new PersonNotFoundException("Person with id: "+id+" not found");
+            }
             em.remove(person);
             em.getTransaction().commit();
+            return new PersonDTO(person);
         } finally {
             em.close();
         }
-        return new PersonDTO(person);
     }
 
     @Override
     public PersonDTO getPerson(int id) throws PersonNotFoundException {
         EntityManager em = getEntityManager();
-        Person result = em.find(Person.class, id);
-        if (result == null) {
-            throw new PersonNotFoundException(String.format("Person with id: (%id) not found", id));
-        } else {
-            try {
 
-                PersonDTO resultDTO = new PersonDTO(result);
-                return resultDTO;
-            } finally {
-                em.close();
+        try {
+            Person result = em.find(Person.class, id);
+
+            if (result == null) {
+                throw new PersonNotFoundException("Person with id: "+id+" not found");
+            } else {
+
+            PersonDTO resultDTO = new PersonDTO(result);
+            return resultDTO;
             }
+        } finally {
+            em.close();
         }
     }
 
@@ -97,11 +101,12 @@ public class PersonFacade implements interfaces.PersonInterface {
             em.getTransaction().begin();
             Person person = em.find(Person.class, p.getId());
             if (person == null) {
-                throw new PersonNotFoundException(String.format("Person not found"));
+                throw new PersonNotFoundException("Person not found");
             }
             person.setFirstName(p.getfName());
             person.setLastName(p.getlName());
             person.setPhone(p.getPhone());
+            person.setLastEdited(new Date());
             em.getTransaction().commit();
             return new PersonDTO(person);
         } finally {

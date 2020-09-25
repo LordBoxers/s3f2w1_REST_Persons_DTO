@@ -34,6 +34,8 @@ public class Person implements Serializable {
     }
 
     public Person(String firstName, String lastName, String phone) {
+        this.created = new Date();
+        this.lastEdited = new Date();
         this.firstName = firstName;
         this.lastName = lastName;
         this.phone = phone;
@@ -70,10 +72,6 @@ public class Person implements Serializable {
 
     public Date getCreated() {
         return created;
-    }
-
-    public void setCreated(Date created) {
-        this.created = created;
     }
 
     public Date getLastEdited() {

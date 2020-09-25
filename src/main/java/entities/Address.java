@@ -1,10 +1,12 @@
 package entities;
 
 import java.io.Serializable;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 
 @Entity
 public class Address implements Serializable {
@@ -16,6 +18,8 @@ public class Address implements Serializable {
     private String street;
     private String zip;
     private String city;
+    @OneToOne(cascade = CascadeType.PERSIST) //betyder jeg kan nøjes med at persiste personer da adresserne er sat på personerne
+    private Person person;
 
     public Address(String street, String zip, String city) {
         this.street = street;
@@ -24,6 +28,14 @@ public class Address implements Serializable {
     }
 
     public Address() {
+    }
+
+    public Person getPerson() {
+        return person;
+    }
+
+    public void setPerson(Person person) {
+        this.person = person;
     }
 
     public Long getId() {

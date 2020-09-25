@@ -9,8 +9,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
-
 
 @Entity
 @NamedQuery(name = "Person.deleteAllRows", query = "DELETE from Person")
@@ -23,12 +23,15 @@ public class Person implements Serializable {
     private String firstName;
     private String lastName;
     private String phone;
-    
+
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date created;
-    
+
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date lastEdited;
+
+    @OneToOne(cascade = CascadeType.PERSIST)
+    private Address address;
 
     public Person() {
     }
@@ -41,6 +44,16 @@ public class Person implements Serializable {
         this.phone = phone;
     }
 
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
+        if (address != null) {
+            address.setPerson(this);
+        }
+    }
 
     public int getId() {
         return id;
@@ -81,8 +94,4 @@ public class Person implements Serializable {
     public void setLastEdited(Date lastEdited) {
         this.lastEdited = lastEdited;
     }
-    
-    
-
-    
 }

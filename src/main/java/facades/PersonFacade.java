@@ -57,6 +57,7 @@ public class PersonFacade implements interfaces.PersonInterface {
                 throw new PersonNotFoundException("Person with id: "+id+" not found");
             }
             em.remove(person);
+            em.remove(person.getAddress());
             em.getTransaction().commit();
             return new PersonDTO(person);
         } finally {
